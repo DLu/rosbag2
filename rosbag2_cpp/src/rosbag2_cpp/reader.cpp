@@ -19,11 +19,39 @@
 #include <utility>
 #include <vector>
 
+#include "rcpputils/asserts.hpp"
+#include "rcpputils/filesystem_helper.hpp"
+
 #include "rosbag2_cpp/info.hpp"
 #include "rosbag2_cpp/reader_interfaces/base_reader_interface.hpp"
 
 namespace rosbag2_cpp
 {
+
+std::vector<std::string> resolve_relative_paths(
+  const std::string & base_folder, std::vector<std::string> relative_files, const int version)
+{
+  auto base_path = rcpputils::fs::path(base_folder);
+  if (version < 4) {
+    // In older rosbags (version <=3) relative files are prefixed with the rosbag folder name
+    base_path = rcpputils::fs::path(base_folder).parent_path();
+  }
+
+  rcpputils::require_true(
+    base_path.exists(), "base folder does not exist: " + base_folder);
+  rcpputils::require_true(
+    base_path.is_directory(), "base folder has to be a directory: " + base_folder);
+
+  for (auto & file : relative_files) {
+    auto path = rcpputils::fs::path(file);
+    if (path.is_absolute()) {
+      continue;
+    }
+    file = (base_path / path).string();
+  }
+
+  return relative_files;
+}
 
 Reader::Reader(std::unique_ptr<reader_interfaces::BaseReaderInterface> reader_impl)
 : reader_impl_(std::move(reader_impl))

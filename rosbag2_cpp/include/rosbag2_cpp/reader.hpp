@@ -39,6 +39,10 @@
 
 namespace rosbag2_cpp
 {
+
+std::vector<std::string> resolve_relative_paths(
+  const std::string & base_folder, std::vector<std::string> relative_files, const int version = 4);
+
 namespace reader_interfaces
 {
 class BaseReaderInterface;

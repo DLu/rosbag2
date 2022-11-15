@@ -22,6 +22,8 @@
 
 #include "rcpputils/filesystem_helper.hpp"
 
+#include "rosbag2_cpp/reader.hpp"
+
 #include "rosbag2_compression/compression_options.hpp"
 #include "rosbag2_compression/zstd_decompressor.hpp"
 
@@ -66,7 +68,8 @@ void SequentialCompressionReader::open(
       ROSBAG2_COMPRESSION_LOG_WARN("No file paths were found in metadata.");
       return;
     }
-    file_paths_ = metadata_.relative_file_paths;
+    file_paths_ = rosbag2_cpp::resolve_relative_paths(
+      storage_options.uri, metadata_.relative_file_paths, metadata_.version);
     current_file_iterator_ = file_paths_.begin();
     setup_decompression();
 

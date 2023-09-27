@@ -213,7 +213,7 @@ void SqliteStorage::open(
   read_statement_ = nullptr;
   write_statement_ = nullptr;
 
-  ROSBAG2_STORAGE_DEFAULT_PLUGINS_LOG_INFO_STREAM(
+  ROSBAG2_STORAGE_DEFAULT_PLUGINS_LOG_DEBUG_STREAM(
     "Opened database '" << relative_path_ << "' for " << to_string(io_flag) << ".");
 }
 
